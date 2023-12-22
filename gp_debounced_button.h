@@ -3,12 +3,12 @@
 
 #include <stdint.h>
 
-typedef struct unbouncedButton gp_debounced_button_t;
+typedef struct gp_debounced_button gp_debounced_button_t;
 
 /// @brief initializes an unbounce button
 /// @param  button to be initialized
 /// @return 0 on success, otherwise use UnbouncedButton_GetLastError() to retreive errorcode
-uint8_t Unbouncedbutton_Init(Unbouncedbutton_t**);
+uint8_t gp_debounced_button_init(gp_debounced_button_t**);
 
 
 
