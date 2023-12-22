@@ -17,7 +17,7 @@ struct flags {
     uint8_t shortPush : 1;
 };
 
-struct unbouncedButton {
+struct gp_debounced_button {
     // times
     uint64_t lastMillis;
     uint16_t unbounceTime;
@@ -31,10 +31,10 @@ struct unbouncedButton {
     struct flags flags;
 };
 
-uint8_t Unbouncedbutton_Init(Unbouncedbutton_t** buttonParam, uint8_t statePushedParam) {
+uint8_t Unbouncedbutton_Init(gp_debounced_button** buttonParam, uint8_t statePushedParam) {
     __assertNotInitialized(buttonParam);
 
-    if(*buttonParam = (Unbouncedbutton_t*)(sizeof(Unbouncedbutton_t)) == NULL) {
+    if(*buttonParam = (gp_debounced_button*)(sizeof(gp_debounced_button)) == NULL) {
 
         return UNBOUNCEDBUTTON_ERROR_ALLOCFAILED;
     };
