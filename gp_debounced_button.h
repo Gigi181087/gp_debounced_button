@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef struct unbouncedButton Unbouncedbutton_t;
+typedef struct unbouncedButton gp_debounced_button_t;
 
 /// @brief initializes an unbounce button
 /// @param  button to be initialized
