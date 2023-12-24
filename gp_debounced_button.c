@@ -1,4 +1,4 @@
-#include "unbouncedButton.h"
+#include "gp_debounced_button.h"
 #include <malloc.h>
 
 
@@ -31,10 +31,10 @@ struct gp_debounced_button {
     struct flags flags;
 };
 
-uint8_t Unbouncedbutton_Init(gp_debounced_button** buttonParam, uint8_t statePushedParam) {
+uint8_t Unbouncedbutton_Init(gp_debounced_button_t** buttonParam, uint8_t statePushedParam) {
     __assertNotInitialized(buttonParam);
 
-    if(*buttonParam = (gp_debounced_button*)(sizeof(gp_debounced_button)) == NULL) {
+    if(*buttonParam = (gp_debounced_button_t*)(sizeof(gp_debounced_button_t)) == NULL) {
 
         return UNBOUNCEDBUTTON_ERROR_ALLOCFAILED;
     };
@@ -45,7 +45,7 @@ uint8_t Unbouncedbutton_Init(gp_debounced_button** buttonParam, uint8_t statePus
     return UNBOUNCEDBUTTON_ERROR_NOERROR;
 }
 
-uint8_t UnbouncedButton_AddActionToShortPush(Unbouncedbutton_t* buttonParam, uint32_t millisecondsParam, void (*actionParam)()) {
+uint8_t UnbouncedButton_AddActionToShortPush(gp_debounced_button_t* buttonParam, uint32_t millisecondsParam, void (*actionParam)()) {
     __assertInitialized(buttonParam);
 
     buttonParam->unbounceTime = millisecondsParam;
@@ -55,7 +55,7 @@ uint8_t UnbouncedButton_AddActionToShortPush(Unbouncedbutton_t* buttonParam, uin
     return UNBOUNCEDBUTTON_ERROR_NOERROR;
 }
 
-uint8_t UnbouncedButton_RemoveActionFromShortPush(Unbouncedbutton_t* buttonParam) {
+uint8_t UnbouncedButton_RemoveActionFromShortPush(gp_debounced_button_t* buttonParam) {
     __assertInitialized(buttonParam);
 
     buttonParam->unbounceTime = 0;
@@ -65,7 +65,7 @@ uint8_t UnbouncedButton_RemoveActionFromShortPush(Unbouncedbutton_t* buttonParam
     return UNBOUNCEDBUTTON_ERROR_NOERROR;
 }
 
-uint8_t UnbouncedButton_AddActionToLongPush(Unbouncedbutton_t* buttonParam, uint32_t millisecondsParam, void (*actionParam)()) {
+uint8_t UnbouncedButton_AddActionToLongPush(gp_debounced_button_t* buttonParam, uint32_t millisecondsParam, void (*actionParam)()) {
     __assertInitialized(buttonParam);
 
     buttonParam->longPushTime = millisecondsParam;
@@ -75,7 +75,7 @@ uint8_t UnbouncedButton_AddActionToLongPush(Unbouncedbutton_t* buttonParam, uint
     return UNBOUNCEDBUTTON_ERROR_NOERROR;
 }
 
-uint8_t UnbouncedButton_RemoveActionFromLongPush(Unbouncedbutton_t* buttonParam) {
+uint8_t UnbouncedButton_RemoveActionFromLongPush(gp_debounced_button_t* buttonParam) {
     __assertInitialized(buttonParam);
 
     buttonParam->longPushTime = 0;
@@ -85,7 +85,7 @@ uint8_t UnbouncedButton_RemoveActionFromLongPush(Unbouncedbutton_t* buttonParam)
     return UNBOUNCEDBUTTON_ERROR_NOERROR;
 }
 
-uint8_t Unbouncedbutton_Handle(Unbouncedbutton_t* buttonParam, uint8_t stateParam, uint64_t systemTimeParam) {
+uint8_t Unbouncedbutton_Handle(gp_debounced_button_t* buttonParam, uint8_t stateParam, uint64_t systemTimeParam) {
     __assertInitialized(buttonParam);
 
     if(stateParam == buttonParam->statePushed) {
