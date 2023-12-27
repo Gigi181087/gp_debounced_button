@@ -17,6 +17,13 @@ struct flags {
     uint8_t shortPush : 1;
 };
 
+struct actions {
+    uint8_t used;
+    uint32_t time_pushed;
+    void(*action)();
+    uint8_t reset;
+};
+
 struct gp_debounced_button {
     // times
     gp_push_state_t last_push_state;
@@ -27,12 +34,7 @@ struct gp_debounced_button {
     struct actions actions[4];
 };
 
-struct actions {
-    uint8_t used;
-    uint32_t time_pushed;
-    void(*action)();
-    uint8_t reset;
-};
+
 
 uint8_t gp_debounced_button_init(gp_debounced_button_t** button_param) {
     __assertNotInitialized(button_param);
