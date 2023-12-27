@@ -34,11 +34,11 @@ struct actions {
     uint8_t reset;
 };
 
-uint8_t gp_debounced_button_init(gp_debounced_button_t** button_param, uint8_t statePushedParam) {
+uint8_t gp_debounced_button_init(gp_debounced_button_t** button_param) {
     __assertNotInitialized(button_param);
 
 
-    if(*button_param = (gp_debounced_button_t*)(sizeof(gp_debounced_button_t)) == NULL) {
+    if(*button_param = (gp_debounced_button_t*)malloc((sizeof(gp_debounced_button_t))) == NULL) {
 
         return UNBOUNCEDBUTTON_ERROR_ALLOCFAILED;
     };
@@ -87,6 +87,11 @@ uint8_t gp_debounced_button_remove_action(gp_debounced_button_t* button_param, g
     return GP_DEBOUNCEDBUTTON_ERRORS_NOERROR;
 }
 
+/// @brief 
+/// @param button_param 
+/// @param push_state_param 
+/// @param systemTimeParam 
+/// @return 
 uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_state_t push_state_param, uint64_t systemTimeParam) {
     __assertInitialized(button_param);
 
@@ -105,7 +110,7 @@ uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_
         }
     }
 
-    if(stateParam == button_param->statePushed) {
+    /*if(stateParam == button_param->statePushed) {
         
         if(button_param->flags.longPush) {
 
@@ -146,7 +151,7 @@ uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_
         button_param->flags.shortReset = 1;
         button_param->flags.longReset = 1;
         button_param->lastMillis = systemTimeParam;
-    }
+    }*/
 
     button_param->last_push_state = push_state_param;
 
