@@ -19,117 +19,136 @@ struct flags {
 
 struct gp_debounced_button {
     // times
-    uint64_t lastMillis;
-    uint16_t unbounceTime;
-    uint32_t longPushTime;
-
-    uint8_t statePushed;
-
-    void (*buttonPushedShort)();
-    void (*buttonPushedLong)();
+    gp_push_state_t last_push_state;
+    uint64_t time_pushed;
+    uint64_t time_released;
 
     struct flags flags;
+    struct actions actions[4];
 };
 
-uint8_t Unbouncedbutton_Init(gp_debounced_button_t** buttonParam, uint8_t statePushedParam) {
-    __assertNotInitialized(buttonParam);
+struct actions {
+    uint8_t used;
+    uint32_t time_pushed;
+    void(*action)();
+    uint8_t reset;
+};
 
-    if(*buttonParam = (gp_debounced_button_t*)(sizeof(gp_debounced_button_t)) == NULL) {
+uint8_t gp_debounced_button_init(gp_debounced_button_t** button_param, uint8_t statePushedParam) {
+    __assertNotInitialized(button_param);
+
+
+    if(*button_param = (gp_debounced_button_t*)(sizeof(gp_debounced_button_t)) == NULL) {
 
         return UNBOUNCEDBUTTON_ERROR_ALLOCFAILED;
     };
+    (*button_param)->time_released = 0;
+    (*button_param)->time_pushed = 0;
 
-    (*buttonParam)->lastMillis = 0;
-    (*buttonParam)->statePushed = statePushedParam;
-
-    return UNBOUNCEDBUTTON_ERROR_NOERROR;
-}
-
-uint8_t UnbouncedButton_AddActionToShortPush(gp_debounced_button_t* buttonParam, uint32_t millisecondsParam, void (*actionParam)()) {
-    __assertInitialized(buttonParam);
-
-    buttonParam->unbounceTime = millisecondsParam;
-    buttonParam->buttonPushedShort = actionParam;
-    buttonParam->flags.shortPush = 1;
+    for (uint8_t i = 0; i < 4; i++) {
+        (*button_param)->actions[i].used = 0;
+        (*button_param)->actions[i].time_pushed = 0;
+        (*button_param)->actions[i].reset = 1;
+        (*button_param)->actions[i].action = NULL;
+    }
 
     return UNBOUNCEDBUTTON_ERROR_NOERROR;
 }
 
-uint8_t UnbouncedButton_RemoveActionFromShortPush(gp_debounced_button_t* buttonParam) {
-    __assertInitialized(buttonParam);
+uint8_t gp_debounced_button_destroy(gp_debounced_button_t** button_param) {
+    __assertInitialized(*button_param);
 
-    buttonParam->unbounceTime = 0;
-    buttonParam->buttonPushedShort = NULL;
-    buttonParam->flags.shortPush = 0;
 
-    return UNBOUNCEDBUTTON_ERROR_NOERROR;
+    free(*button_param);
+
+    return 0;
 }
 
-uint8_t UnbouncedButton_AddActionToLongPush(gp_debounced_button_t* buttonParam, uint32_t millisecondsParam, void (*actionParam)()) {
-    __assertInitialized(buttonParam);
+uint8_t gp_debounced_button_add_action(gp_debounced_button_t* button_param, gp_push_types_t type_param, uint32_t push_time_param, void(*action_param)()) {
+    __assertInitialized(button_param);
 
-    buttonParam->longPushTime = millisecondsParam;
-    buttonParam->buttonPushedLong = actionParam;
-    buttonParam->flags.longPush = 1;
 
-    return UNBOUNCEDBUTTON_ERROR_NOERROR;
+    button_param->actions[(uint8_t)type_param].used = 1;
+    button_param->actions[(uint8_t)type_param].time_pushed = push_time_param;
+    button_param->actions[(uint8_t)type_param].action = action_param;
+    button_param->actions[(uint8_t)type_param].reset = 1;
+
+    return GP_DEBOUNCEDBUTTON_ERRORS_NOERROR;
 }
 
-uint8_t UnbouncedButton_RemoveActionFromLongPush(gp_debounced_button_t* buttonParam) {
-    __assertInitialized(buttonParam);
+uint8_t gp_debounced_button_remove_action(gp_debounced_button_t* button_param, gp_push_types_t type_param) {
+    __assertInitialized(button_param);
 
-    buttonParam->longPushTime = 0;
-    buttonParam->buttonPushedLong = NULL;
-    buttonParam->flags.longPush = 0;
 
-    return UNBOUNCEDBUTTON_ERROR_NOERROR;
+    button_param->actions[(uint8_t)type_param].used = 0;
+    button_param->actions[(uint8_t)type_param].time_pushed = 0;
+    button_param->actions[(uint8_t)type_param].action = NULL;
+
+    return GP_DEBOUNCEDBUTTON_ERRORS_NOERROR;
 }
 
-uint8_t Unbouncedbutton_Handle(gp_debounced_button_t* buttonParam, uint8_t stateParam, uint64_t systemTimeParam) {
-    __assertInitialized(buttonParam);
+uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_state_t push_state_param, uint64_t systemTimeParam) {
+    __assertInitialized(button_param);
 
-    if(stateParam == buttonParam->statePushed) {
+    if (push_state_param == PUSHED) {
+
+        if (button_param->last_push_state != push_state_param) {
+
+            
+        }
+
+    } else {
+
+        if (button_param->last_push_state == PUSHED) {
+            
+
+        }
+    }
+
+    if(stateParam == button_param->statePushed) {
         
-        if(buttonParam->flags.longPush) {
+        if(button_param->flags.longPush) {
 
-            if(buttonParam->flags.longReset) {
+            if(button_param->flags.longReset) {
 
-                if((systemTimeParam - buttonParam->lastMillis) > buttonParam->longPushTime) {
-                    buttonParam->flags.longReset = 0;
-                    buttonParam->flags.shortReset = 0;
+                if((systemTimeParam - button_param->lastMillis) > button_param->time_long_push) {
+                    button_param->flags.longReset = 0;
+                    button_param->flags.shortReset = 0;
 
-                    buttonParam->buttonPushedLong();
+                    button_param->button_pushed_long();
                 }
             }
 
-        } else if(buttonParam->flags.shortPush) {
+        } else if(button_param->flags.shortPush) {
 
-            if(systemTimeParam - buttonParam->lastMillis > buttonParam->unbounceTime) {
+            if(systemTimeParam - button_param->lastMillis > button_param->unbounceTime) {
 
-                if(buttonParam->flags.shortReset) {
-                    buttonParam->flags.shortReset = 0;
+                if(button_param->flags.shortReset) {
+                    button_param->flags.shortReset = 0;
 
-                    buttonParam->buttonPushedShort();
+                    button_param->button_pushed_short();
                 }
             }
         }
 
     } else {
 
-        if(buttonParam->flags.shortPush) {
+        if(button_param->flags.shortPush) {
             
-            if(buttonParam->flags.shortReset) {
+            if(button_param->flags.shortReset) {
 
-                if(systemTimeParam - buttonParam->lastMillis > buttonParam->unbounceTime) {
-                    buttonParam->buttonPushedShort();
+                if(systemTimeParam - button_param->lastMillis > button_param->unbounceTime) {
+                    button_param->button_pushed_short();
                 }
             }
         }
 
-        buttonParam->flags.shortReset = 1;
-        buttonParam->flags.longReset = 1;
-        buttonParam->lastMillis = systemTimeParam;
+        button_param->flags.shortReset = 1;
+        button_param->flags.longReset = 1;
+        button_param->lastMillis = systemTimeParam;
     }
+
+    button_param->last_push_state = push_state_param;
 
     return UNBOUNCEDBUTTON_ERROR_NOERROR;
 }
