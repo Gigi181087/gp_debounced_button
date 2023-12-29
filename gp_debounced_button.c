@@ -1,8 +1,8 @@
 #include "gp_debounced_button.h"
 #include <malloc.h>
 
-#define __assertInitialized(x)     do { if(x == NULL) { return UNBOUNCEDBUTTON_ERROR_NOTINITIALIZED; }} while(0)
-#define __assertNotInitialized(x)   do { if(x != NULL) { return UNBOUNCEDBUTTON_ERROR_ALREADYINITIALIZED; }} while(0)
+#define __assert_initialized(x)     do { if(x == NULL) { return GP_DEBOUNCEDBUTTON_ERRORS_NOTINITIALIZED; }} while(0)
+#define __assertNotInitialized(x)   do { if(x != NULL) { return GP_DEBOUNCEDBUTTON_ERRORS_ALREADYINITIALIZED; }} while(0)
 
 struct flags {
     uint8_t longReset : 1;
@@ -34,7 +34,7 @@ uint8_t gp_debounced_button_init(gp_debounced_button_t** button_param) {
 
     if(*button_param = (gp_debounced_button_t*)malloc((sizeof(gp_debounced_button_t))) == NULL) {
 
-        return UNBOUNCEDBUTTON_ERROR_ALLOCFAILED;
+        return GP_DEBOUNCEDBUTTON_ERRORS_ALLOCFAILED;
     };
     (*button_param)->time_released = 0;
     (*button_param)->time_pushed = 0;
