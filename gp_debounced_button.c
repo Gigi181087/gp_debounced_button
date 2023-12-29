@@ -1,14 +1,8 @@
 #include "gp_debounced_button.h"
 #include <malloc.h>
 
-
-#define UNBOUNCEDBUTTON_ERROR_NOERROR                           0
-#define UNBOUNCEDBUTTON_ERROR_ALREADYINITIALIZED                1
-#define UNBOUNCEDBUTTON_ERROR_NOTINITIALIZED                    2
-#define UNBOUNCEDBUTTON_ERROR_ALLOCFAILED                       3
-
-#define __assertInitialized(x)     do { if(x == NULL) { return UNBOUNCEDBUTTON_ERROR_NOTINITIALIZED; }} while(0)
-#define __assertNotInitialized(x)   do { if(x != NULL) { return UNBOUNCEDBUTTON_ERROR_ALREADYINITIALIZED; }} while(0)
+#define __assert_initialized(x)     do { if(x == NULL) { return GP_DEBOUNCEDBUTTON_ERRORS_NOTINITIALIZED; }} while(0)
+#define __assertNotInitialized(x)   do { if(x != NULL) { return GP_DEBOUNCEDBUTTON_ERRORS_ALREADYINITIALIZED; }} while(0)
 
 struct flags {
     uint8_t longReset : 1;
@@ -34,15 +28,13 @@ struct gp_debounced_button {
     struct actions actions[4];
 };
 
-
-
 uint8_t gp_debounced_button_init(gp_debounced_button_t** button_param) {
     __assertNotInitialized(button_param);
 
 
     if(*button_param = (gp_debounced_button_t*)malloc((sizeof(gp_debounced_button_t))) == NULL) {
 
-        return UNBOUNCEDBUTTON_ERROR_ALLOCFAILED;
+        return GP_DEBOUNCEDBUTTON_ERRORS_ALLOCFAILED;
     };
     (*button_param)->time_released = 0;
     (*button_param)->time_pushed = 0;
@@ -54,11 +46,11 @@ uint8_t gp_debounced_button_init(gp_debounced_button_t** button_param) {
         (*button_param)->actions[i].action = NULL;
     }
 
-    return UNBOUNCEDBUTTON_ERROR_NOERROR;
+    return GP_DEBOUNCEDBUTTON_ERRORS_NOERROR;
 }
 
 uint8_t gp_debounced_button_destroy(gp_debounced_button_t** button_param) {
-    __assertInitialized(*button_param);
+    __assert_initialized(*button_param);
 
 
     free(*button_param);
@@ -67,7 +59,7 @@ uint8_t gp_debounced_button_destroy(gp_debounced_button_t** button_param) {
 }
 
 uint8_t gp_debounced_button_add_action(gp_debounced_button_t* button_param, gp_push_types_t type_param, uint32_t push_time_param, void(*action_param)()) {
-    __assertInitialized(button_param);
+    __assert_initialized(button_param);
 
 
     button_param->actions[(uint8_t)type_param].used = 1;
@@ -79,7 +71,7 @@ uint8_t gp_debounced_button_add_action(gp_debounced_button_t* button_param, gp_p
 }
 
 uint8_t gp_debounced_button_remove_action(gp_debounced_button_t* button_param, gp_push_types_t type_param) {
-    __assertInitialized(button_param);
+    __assert_initialized(button_param);
 
 
     button_param->actions[(uint8_t)type_param].used = 0;
@@ -95,7 +87,7 @@ uint8_t gp_debounced_button_remove_action(gp_debounced_button_t* button_param, g
 /// @param systemTimeParam 
 /// @return 
 uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_state_t push_state_param, uint64_t systemTimeParam) {
-    __assertInitialized(button_param);
+    __assert_initialized(button_param);
 
     if (push_state_param == PUSHED) {
 
@@ -157,5 +149,5 @@ uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_
 
     button_param->last_push_state = push_state_param;
 
-    return UNBOUNCEDBUTTON_ERROR_NOERROR;
+    return GP_DEBOUNCED_DBUTTON_ERROR_NOERROR;
 }
