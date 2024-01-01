@@ -32,7 +32,7 @@ typedef enum settings {
 typedef enum push_state {
     RELEASED = 0,
     PUSHED = 1
-} gp_push_state_t;
+} gp_debounced_button_push_state_t;
 
 /// @brief initializes an debounced button
 /// @param  button to be initialized
@@ -69,7 +69,7 @@ uint8_t gp_debounced_button_set_setting(gp_debounced_button_t*, gp_debounced_but
 /// @param state state of the button read by any means
 /// @param  systemtime systemtime in milliseeconds
 /// @return 0 on success, otherwise errorcode of occured error
-uint8_t gp_debounced_button_handle(gp_debounced_button_t*, gp_push_state_t,  uint64_t);
+uint8_t gp_debounced_button_handle(gp_debounced_button_t*, gp_debounced_button_push_state_t, uint64_t);
 
 #ifdef __cplusplus
 }

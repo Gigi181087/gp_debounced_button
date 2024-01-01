@@ -176,7 +176,7 @@ uint8_t gp_debounced_button_set_setting(gp_debounced_button_t* button_param, gp_
 }
 
 
-uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_state_t push_state_param, uint64_t system_time_param) {
+uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_debounced_button_push_state_t push_state_param, uint64_t system_time_param) {
     __assert_initialized(button_param);
 
     
@@ -211,8 +211,6 @@ uint8_t gp_debounced_button_handle(gp_debounced_button_t* button_param, gp_push_
                             button_param->short_action();
                         }
                     }
-
-
                 }
                 button_param->flags.handled = TRUE;
             }
