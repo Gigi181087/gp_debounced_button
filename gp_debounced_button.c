@@ -70,7 +70,7 @@ uint8_t gp_debounced_button_destroy(gp_debounced_button_t** button_param) {
     return 0;
 }
 
-uint8_t gp_debounced_button_add_action(gp_debounced_button_t* button_param, gp_debounced_button_push_types_t type_param, uint32_t push_time_param, void(*action_param)()) {
+uint8_t gp_debounced_button_add_action(gp_debounced_button_t* button_param, gp_debounced_button_push_types_t type_param, void(*action_param)()) {
     __assert_initialized(button_param);
 
 

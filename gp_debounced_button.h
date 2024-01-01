@@ -49,7 +49,7 @@ uint8_t gp_debounced_button_destroy(gp_debounced_button_t**);
 /// @param  type pushtype where the action is added
 /// @param  action action which is added
 /// @return 0 on success, otherwise errorcode of occured error
-uint8_t gp_debounced_button_add_action(gp_debounced_button_t*, gp_debounced_button_push_types_t, uint32_t, void(*)());
+uint8_t gp_debounced_button_add_action(gp_debounced_button_t*, gp_debounced_button_push_types_t, void(*)());
 
 /// @brief removes an action from specifed push pattern
 /// @param  module module on which the action is performed
