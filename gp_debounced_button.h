@@ -3,6 +3,7 @@
 
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #define GP_DEBOUNCEDBUTTON_ERRORS_NOERROR                   0
 #define GP_DEBOUNCEDBUTTON_ERRORS_ALREADYINITIALIZED        1
