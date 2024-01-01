@@ -14,7 +14,7 @@ struct flags {
     BOOL double_long_used : 1;
     BOOL handled : 1;
     BOOL short_pushed : 1;
-    gp_push_state_t last_button_state : 1;
+    gp_debounced_button_push_state_t last_button_state : 1;
 };
 
 struct gp_debounced_button {
